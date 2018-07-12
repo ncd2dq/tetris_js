@@ -31,8 +31,8 @@ class GameBoard{
     }
     
     move(dir){
-        this.timer = 0;
         if(dir == 'down'){
+            this.timer = 0;
             if(this._try_move_focus(0, 1)){
                 this.focus_piece.move_down();
             } else {
