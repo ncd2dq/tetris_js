@@ -5,10 +5,22 @@ let game_board;
 let sliding = false;
 let slide_timer = 0;
 
+let backgrond_sound;
+
+
+function preload(){
+    soundFormats('mp3');
+    background_sound = loadSound("assets/backtrack.mp3");
+    background_sound.setVolume(0.6);
+}
+
 function setup(){
     createCanvas(Canvas_Width, Canvas_Height);
     game_board = new GameBoard();
     
+    if(background_sound.isLoaded()){
+        background_sound.loop();
+    }
 }
 
 
