@@ -8,7 +8,7 @@ class GameBoard{
         
         this.width = Canvas_Width / this.max_w;
         this.height = Canvas_Height / this.max_h;
-        
+        this.timer = 0;
         this.focus_piece = this.choose_piece();
         this.current_pieces = [];
     }
@@ -30,13 +30,33 @@ class GameBoard{
         
     }
     
+    move(dir){
+        this.timer = 0;
+        if(dir == 'down'){
+            if(this._try_move_focus(0, 1)){
+                this.focus_piece.move_down();
+            } else {
+                this.current_pieces.push(this.focus_piece);
+                this.focus_piece = this.choose_piece();
+            }
+        } else if (dir == 'left'){
+            if(this._try_move_focus(-1, 0)){
+                this.focus_piece.move_left();
+            }
+        } else if (dir == 'right'){
+            if(this._try_move_focus(1, 0)){
+                this.focus_piece.move_right();
+            }
+        }
+    }
+    
     _try_move_focus(x_dir, y_dir){
         let x = this.focus_piece.piece['x'];
         let y = this.focus_piece.piece['y'];
         let x_len = this.focus_piece.piece['type'][0].length;
         let y_len = this.focus_piece.piece['type'].length;
         
-        if(x + x_len + x_dir > this.max_w || x + x_len + x_dir < 0 || y + y_len + y_dir> this.max_h || y + y_len + y_dir< 0){
+        if(x + x_len + x_dir > this.max_w || x + x_dir < 0 || y + y_len + y_dir> this.max_h || y + y_len + y_dir< 0){
             return false;
         }
         return true;
@@ -195,8 +215,16 @@ class GameBoard{
         
     }
     
+    force_move(){
+        this.timer++;
+        if(this.timer % 75 == 0){
+            this.move('down');
+        }
+    }
+    
     run(){
         this.reset();
+        this.force_move();
         this.include_focus_piece();
         this.display();
     }
