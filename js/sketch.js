@@ -1,39 +1,50 @@
 let Canvas_Width = 600;
 let Canvas_Height = 600;
+let real_width = 800;
 
 let game_board;
-let sliding = false;
+let sliding_down = false;
+let sliding_right = false;
+let sliding_left = false;
 let slide_timer = 0;
 
 let backgrond_sound;
 
 
-function preload(){
+/*function preload(){
     soundFormats('mp3');
     background_sound = loadSound("assets/backtrack.mp3");
     background_sound.setVolume(0.6);
-}
+}*/
 
 function setup(){
-    createCanvas(Canvas_Width, Canvas_Height);
+    createCanvas(real_width, Canvas_Height);
     game_board = new GameBoard();
     
-    if(background_sound.isLoaded()){
+/*    if(background_sound.isLoaded()){
         background_sound.loop();
-    }
+    }*/
 }
 
 
 function draw(){
     background(0, 0, 0);
+    fill(255, 255, 255);
+    stroke(100);
+    strokeWeight(5);
+    rect(Canvas_Width + 1, 0, real_width - Canvas_Width, Canvas_Height);
     game_board.run();
-    console.log(slide_timer);
     
     if(slide_timer == 25 && frameCount % 2 == 0){
-        game_board.move('down');
-        console.log('slide');
+        if(sliding_down){
+            game_board.move('down');
+        } else if(sliding_right){
+            game_board.move('right'); 
+        } else if (sliding_left){
+            game_board.move('left'); 
+        }
     }
-    if(sliding && slide_timer < 25){
+    if((sliding_down || sliding_left || sliding_right) && slide_timer < 25){
         slide_timer++;
     }
 }
@@ -42,24 +53,34 @@ function draw(){
 function keyPressed(){
     //down right up left space
     //40  39  38  37  32
-    if(keyCode == 40){
+    if(keyCode == 40){ //down
         game_board.move('down')
-        sliding = true;
+        sliding_down = true;
         
-    } else if (keyCode == 39){
+    } else if (keyCode == 39){ //right
         game_board.move('right');
-    } else if (keyCode == 38){
-
-    } else if (keyCode == 37){
+        sliding_right = true;
+    } else if (keyCode == 38){ //up
+        game_board.rotate();
+    } else if (keyCode == 37){ //left
         game_board.move('left');
-    } else if (keyCode == 32){
-        game_board.focus_piece.rotate();
+        sliding_left = true;
+    } else if (keyCode == 32){ //space
+        game_board.instant_down();
+    } else if(keyCode == 16){ //shift
+        game_board.swap_piece();
     }
 }
 
 function keyReleased(){
     if(keyCode == 40){
-        sliding = false;
+        sliding_down = false;
+        slide_timer = 0;
+    } else if (keyCode == 39){
+        sliding_right = false;
+        slide_timer = 0;
+    } else if(keyCode == 37){
+        sliding_left = false;
         slide_timer = 0;
     }
 }

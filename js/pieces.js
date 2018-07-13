@@ -1,10 +1,8 @@
 class Piece{
-    constructor(piece_type, name, rotation, rotation_varitions){
+    constructor(piece_type, name, rotation, rotation_varitions, max_h, max_w){
         //'x':  , 'y':  , 'type',  'rotation':
-        this.piece = {'x': 0, 'y': 0, 'type': piece_type, 'rotation': rotation, 'name': name};
+        this.piece = {'x': max_w / 2 - 2, 'y': 0, 'type': piece_type, 'rotation': rotation, 'name': name};
         this.rotation_variations = rotation_varitions;
-        
-        this.solidify = false;
     }
     
     move_down(){
