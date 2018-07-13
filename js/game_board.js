@@ -363,7 +363,7 @@ class GameBoard{
     create_saved_dict(){
         let save_dict = {};
         save_dict['L'] = loadImage('assets/L.png');
-        save_dict['L_L'] = loadImage('assets/L_l.png');
+        save_dict['L_L'] = loadImage('assets/L_L.png');
         save_dict['L_R'] = loadImage('assets/L_R.png');
         save_dict['S_L'] = loadImage('assets/S_L.png');
         save_dict['S_R'] = loadImage('assets/S_R.png');
