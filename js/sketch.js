@@ -11,11 +11,11 @@ let slide_timer = 0;
 let backgrond_sound;
 
 
-/*function preload(){
+function preload(){
     soundFormats('mp3');
     background_sound = loadSound("assets/backtrack.mp3");
     background_sound.setVolume(0.6);
-}*/
+}
 
 function setup(){
     createCanvas(real_width, Canvas_Height);
