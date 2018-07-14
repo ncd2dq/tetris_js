@@ -1,3 +1,7 @@
+//5 == solidified piece
+//1 == focus piece
+//2 = preview piece
+
 class GameBoard{
     constructor(){
         this.max_w = 16;
@@ -9,7 +13,7 @@ class GameBoard{
         this.width = Canvas_Width / this.max_w;
         this.height = Canvas_Height / this.max_h;
         this.timer = 0;
-        this.current_pieces = [];
+        //this.current_pieces = [];
         this.focus_piece = this.choose_piece();
         this.preview_piece = this.create_preview();
         
@@ -46,7 +50,7 @@ class GameBoard{
         
         this.focus_piece.piece['x'] = store_x;
         this.focus_piece.piece['y'] = store_y;
-        
+
         return preview;
     }
     
@@ -63,27 +67,30 @@ class GameBoard{
         }
     }
     
-    include_pieces(){
-        for(let i = 0; i < this.current_pieces.length; i++){
-            let y = this.current_pieces[i].piece['y'];
-            let x = this.current_pieces[i].piece['x'];
-            for(let j = 0; j < this.current_pieces[i].piece['type'].length; j++){
-                for(let k = 0; k < this.current_pieces[i].piece['type'][0].length; k++){
-                    if(this.current_pieces[i].piece['type'][j][k] == 1){
-                        this.game_board[j + y][k + x] = 1;
-                    }
+    //NEW METHOD TO TRY AND GET INDIVIDUAL BLOCKS
+    include_new_piece(piece){
+        let y = piece.piece['y'];
+        let x = piece.piece['x'];
+        for(let j = 0; j < piece.piece['type'].length; j++){
+            for(let k = 0; k < piece.piece['type'][0].length; k++){
+                if(piece.piece['type'][j][k] == 1){
+                    this.game_board[j + y][k + x] = 5;
                 }
             }
         }
     }
     
     reset(){
-        this.game_board = this.create_game_board();
+        for(let j = 0; j < this.game_board.length; j++){
+            for(let i = 0; i < this.game_board[0].length; i ++){
+                if(this.game_board[j][i] == 1 || this.game_board[j][i] == 2){
+                    this.game_board[j][i] = 0;
+                }
+            }
+        }
     }
     
     _try_draw_focus(x_dir, y_dir, future_rotation, x_p, y_p){
-        this.reset();
-        this.include_pieces();
         
         let x;
         let y;
@@ -107,7 +114,7 @@ class GameBoard{
 
         for(let i = 0; i < piece.length; i++){
             for(let j = 0; j < piece[0].length; j++){
-                if(this.game_board[i + y][j + x] == 1 && piece[i][j] == 1){
+                if(this.game_board[i + y][j + x] == 5 && piece[i][j] == 1){
                     return false;
                 }   
             }
@@ -152,8 +159,7 @@ class GameBoard{
             }
         }
         
-        
-        this.current_pieces.push(this.focus_piece);
+        this.include_new_piece(this.focus_piece);
         this.focus_piece = this.choose_piece();
         this.preview_piece = this.create_preview();
         this.already_saved = false;
@@ -173,7 +179,8 @@ class GameBoard{
                 if(preview){
                     return true;
                 } else {
-                    this.current_pieces.push(this.focus_piece);
+                    //this.current_pieces.push(this.focus_piece);
+                    this.include_new_piece(this.focus_piece);
                     this.focus_piece = this.choose_piece();
                     this.preview_piece = this.create_preview();
                     this.already_saved = false;
@@ -344,12 +351,12 @@ class GameBoard{
     display(){
         for(let j = 0; j < this.max_h; j++){
             for(let i = 0; i < this.max_w; i++){
-                if(this.game_board[j][i] == 1){
+                if(this.game_board[j][i] == 1 || this.game_board[j][i] == 5){ //solidified or focus
                     fill(0, 255, 0);
                     stroke(255);
                     strokeWeight(1);
                     rect(i * this.width, j * this.height, this.width - 0.3, this.height - 0.3);
-                } else if (this.game_board[j][i] == 2){
+                } else if (this.game_board[j][i] == 2){ // preview piece
                     fill(255, 255, 255);
                     stroke(100);
                     strokeWeight(1);
@@ -409,7 +416,7 @@ class GameBoard{
         for(let i = 0; i < this.game_board.length; i++){
             let do_it = true;
             for(let j = 0; j < this.game_board[0].length; j++){
-                if(this.game_board[i][j] == 0){
+                if(this.game_board[i][j] != 5){
                     do_it = false;;
                 }
             }
@@ -424,13 +431,11 @@ class GameBoard{
 
                 this.game_board.splice(0, 0, new_row);
             }
-            console.log(do_it);
         }
     }
     
     run(){
         this.reset();
-        this.include_pieces();
         this.include_preview_piece();
         this.include_focus_piece();
         this.display();

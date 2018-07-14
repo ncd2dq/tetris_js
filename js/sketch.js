@@ -21,9 +21,9 @@ function setup(){
     createCanvas(real_width, Canvas_Height);
     game_board = new GameBoard();
     
-/*    if(background_sound.isLoaded()){
+    if(background_sound.isLoaded()){
         background_sound.loop();
-    }*/
+    }
 }
 
 
