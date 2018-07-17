@@ -475,6 +475,11 @@ class GameBoard{
 
                 this.game_board.splice(0, 0, new_row);
                 score += 25;
+                
+                if(this.force_down_time > 10){
+                    this.force_down_time = Math.floor(this.force_down_time * 10 / 11);
+                }
+                this.preview_piece = this.create_preview(); //to prevent the preview piece from showing on the wrong row after deletion
             }
         }
     }
