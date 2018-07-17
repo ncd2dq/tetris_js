@@ -177,6 +177,8 @@ class GameBoard{
         this.already_saved = false;
         this.clear_floor();
         score += 5;
+        
+        place_block_sound.play();
     }
     
     move(dir, preview){
@@ -205,6 +207,7 @@ class GameBoard{
                     this.already_saved = false;
                     this.clear_floor();
                     score += 5;
+                    place_block_sound.play();
                 }
             }
         } else if (dir == 'left'){
@@ -480,6 +483,9 @@ class GameBoard{
                     this.force_down_time = Math.floor(this.force_down_time * 10 / 11);
                 }
                 this.preview_piece = this.create_preview(); //to prevent the preview piece from showing on the wrong row after deletion
+                if(!clear_row_sound.isPlaying()){
+                    clear_row_sound.play();
+                }
             }
         }
     }

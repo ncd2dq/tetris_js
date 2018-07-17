@@ -9,14 +9,23 @@ let sliding_left = false;
 let slide_timer = 0;
 
 let backgrond_sound;
+let place_block_sound;
+let clear_row_sound;
 
 let score = 0;
 
 
 function preload(){
     soundFormats('mp3');
+    
     background_sound = loadSound("assets/backtrack.mp3");
     background_sound.setVolume(0.6);
+    
+    place_block_sound = loadSound("assets/place_block.mp3");
+    place_block_sound.setVolume(0.7);
+    
+    clear_row_sound = loadSound("assets/clear_row.mp3");
+    clear_row_sound.setVolume(0.4);
 }
 
 function setup(){
