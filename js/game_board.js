@@ -4,8 +4,8 @@
 
 class GameBoard{
     constructor(){
-        this.max_w = 16;
-        this.max_h = 16;
+        this.max_w = 10;
+        this.max_h = 20; 
         
         this.game_board = this.create_game_board();
         this.pieces_dict = this.create_pieces_dict();
@@ -21,6 +21,12 @@ class GameBoard{
         this.saved_piece = false;
         
         this.already_saved = false;
+        
+        this.up_coming_pieces = [];
+        
+        for(let i = 0; i < 4; i ++){
+            this.up_coming_pieces.push(this.choose_piece());
+        }
         
         this.force_down_time = 75;
     }
@@ -160,10 +166,17 @@ class GameBoard{
         }
         
         this.include_new_piece(this.focus_piece);
-        this.focus_piece = this.choose_piece();
+        //this.focus_piece = this.choose_piece();
+        //UPDATE HERE
+        this.focus_piece = this.up_coming_pieces[0];
+        this.check_game_over();
+        this.up_coming_pieces.splice(0, 1);
+        this.up_coming_pieces.push(this.choose_piece());
+        
         this.preview_piece = this.create_preview();
         this.already_saved = false;
         this.clear_floor();
+        score += 5;
     }
     
     move(dir, preview){
@@ -181,10 +194,17 @@ class GameBoard{
                 } else {
                     //this.current_pieces.push(this.focus_piece);
                     this.include_new_piece(this.focus_piece);
-                    this.focus_piece = this.choose_piece();
+                    //this.focus_piece = this.choose_piece();
+                    //UPDATE HERE
+                    this.focus_piece = this.up_coming_pieces[0];
+                    this.check_game_over();
+                    this.up_coming_pieces.splice(0, 1);
+                    this.up_coming_pieces.push(this.choose_piece());
+                    
                     this.preview_piece = this.create_preview();
                     this.already_saved = false;
                     this.clear_floor();
+                    score += 5;
                 }
             }
         } else if (dir == 'left'){
@@ -385,7 +405,13 @@ class GameBoard{
                 this.saved_piece = this.focus_piece;
                 this.saved_piece.piece['x'] = this.max_w / 2 - 2;
                 this.saved_piece.piece['y'] = 0;
-                this.focus_piece = this.choose_piece();
+                
+                //UPDATE HERE
+                //this.focus_piece = this.choose_piece();
+                this.focus_piece = this.up_coming_pieces[0];
+                this.up_coming_pieces.splice(0, 1);
+                this.up_coming_pieces.push(this.choose_piece());
+                
                 this.preview_piece = this.create_preview();
             } else {
                 let temp = this.focus_piece;
@@ -401,8 +427,26 @@ class GameBoard{
     
     display_saved(){
         if(this.saved_piece){
-            image(this.saved_pieces_dict[this.saved_piece.piece['name']], Canvas_Width + (real_width - Canvas_Width) / 4, 20, this.saved_pieces_dict[this.saved_piece.piece['name']].width * 2 / 3, this.saved_pieces_dict[this.saved_piece.piece['name']].height * 2 / 3);
+            image(this.saved_pieces_dict[this.saved_piece.piece['name']], Canvas_Width + (real_width - Canvas_Width) / 4, 50, this.saved_pieces_dict[this.saved_piece.piece['name']].width * 2 / 3, this.saved_pieces_dict[this.saved_piece.piece['name']].height / 2);
+            fill(0,0,0);
+            stroke(0);
+            strokeWeight(2);
+            line(Canvas_Width, 80 * 2 - 20, real_width, 80 * 2 - 20);
+        } else {
+            fill(0,0,0);
+            stroke(0);
+            strokeWeight(2);
+            line(Canvas_Width, 80 * 2 - 20, real_width, 80 * 2 - 20);
+            line(Canvas_Width, 80 * 2 - 20, real_width, 80 * 2 - 20);
         }
+        
+    }
+    
+    display_up_coming(){
+        for(let i = 0; i < this.up_coming_pieces.length; i++){
+            image(this.saved_pieces_dict[this.up_coming_pieces[i].piece['name']], Canvas_Width + (real_width - Canvas_Width) / 4, 100 * i + 80 * 2, this.saved_pieces_dict[this.up_coming_pieces[i].piece['name']].width * 2 / 3, this.saved_pieces_dict[this.up_coming_pieces[i].piece['name']].height / 2);
+        }
+        
     }
     
     force_move(){
@@ -430,8 +474,32 @@ class GameBoard{
                 }
 
                 this.game_board.splice(0, 0, new_row);
+                score += 25;
             }
         }
+    }
+    
+    check_game_over(){
+        //solidified pieces == 5
+        let piece = this.focus_piece.piece['type'];
+        let x = this.focus_piece.piece['x'];
+        let y = this.focus_piece.piece['y'];
+        
+        let game_over = false;
+        for(let i = 0; i < piece.length; i++){
+            for(let j = 0; j < piece[0].length; j++){
+                if(this.game_board[i + y][j + x] == 5 && piece[i][j] == 1){
+                    game_over = true;
+                }
+            }
+        }
+        
+        if(game_over){
+            noLoop();
+            alert('Game over, your score was: ' + score);
+            location.reload();
+        }
+        
     }
     
     run(){
@@ -441,6 +509,7 @@ class GameBoard{
         this.display();
         this.force_move();
         this.display_saved();
+        this.display_up_coming();
     }
     
     

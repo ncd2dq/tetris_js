@@ -1,6 +1,6 @@
-let Canvas_Width = 600;
+let Canvas_Width = 400; 
 let Canvas_Height = 600;
-let real_width = 800;
+let real_width = 600;
 
 let game_board;
 let sliding_down = false;
@@ -9,6 +9,8 @@ let sliding_left = false;
 let slide_timer = 0;
 
 let backgrond_sound;
+
+let score = 0;
 
 
 function preload(){
@@ -47,6 +49,7 @@ function draw(){
     if((sliding_down || sliding_left || sliding_right) && slide_timer < 25){
         slide_timer++;
     }
+    display_score();
 }
 
 
@@ -83,4 +86,12 @@ function keyReleased(){
         sliding_left = false;
         slide_timer = 0;
     }
+}
+
+function display_score(){
+    textSize(25);
+    stroke(0);
+    strokeWeight(2);
+    fill(0, 255, 0);
+    text("Score: " + score, Canvas_Width + (real_width - Canvas_Width) / 4 - 35, 30);
 }
